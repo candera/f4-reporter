@@ -1,0 +1,127 @@
+<file> = <newline*> section+
+<section> = <separator> record <blank-line>+
+separator = '-'+ newline
+record = record-header record-data
+<record-header> = <'RECORD BEGIN TIMESTAMP '> timestamp <'.'> <newline>
+<record-data> =
+  game-header
+  mission
+  flight-events
+  pilot-block+
+
+<game-header> = game-type-line mission-name-line? blank-line
+<game-type-line> = <'Game is '> game-type <' type '> network-type newline
+game-type = 'Tactical Engagement' | 'Instant Action' | 'DogFight' | 'Campaign'
+network-type = 'Local' | 'Networked'
+<mission-name-line> = <'Mission name: '> mission-name newline
+mission-name = line-remainder
+
+mission =
+  mission-type
+  flight-id
+  flight-count
+  ac-type
+  country
+  blank-line
+mission-type = <'Mission Type: '> line-remainder newline
+flight-id = <'Flight Unique Id: '> line-remainder newline
+flight-count = integer <' Ship Flight'> newline
+ac-type = <'Ac type: '> line-remainder newline
+country = <'Contry: '> line-remainder newline
+
+flight-events = <'FLIGHT EVENTS' newline> flight-event+ <blank-line>
+flight-event =
+  <'Event' whitespace-char+>
+  object <whitespace-char+>
+  action <whitespace-char+>
+  (subject <whitespace-char+>)?
+  <('at' whitespace-char+)?>
+  event-time?
+  eol
+object = words
+action =
+ 'launched at' |
+ 'joined as' |
+ 'exited from' |
+ 'ejected' |
+ 'landed' |
+ 'downed by' |
+ 'destroyed by' |
+ 'entered' |
+ 'left'
+subject = words
+
+pilot-block =
+  <separator>
+  <'PILOT SLOT '> pilot-number <':' newline blank-line>
+  player
+  weapons
+pilot-number = integer
+
+player =
+  human-player
+  callsign
+  pilot-status
+  aircraft-status
+  aa-kills
+  ag-kills
+  as-kills
+  an-kills
+  shoot-at
+  other-player-kills
+  <blank-line>
+human-player = <'Human Player: '> line-remainder eol
+callsign = <'Callsign: '> line-remainder eol
+pilot-status = <'Pilot status  - '> line-remainder eol
+aircraft-status = <'Aircraft status  - '> line-remainder eol
+aa-kills = <'AA Kills '> integer eol
+ag-kills = <'AG Kills '> integer eol
+as-kills = <'AS Kills '> integer eol
+an-kills = <'AN Kills '> integer eol
+shoot-at = <'Shoot At '> integer eol
+other-player-kills = <'Other Player Kills '> integer eol
+
+weapons = <'WEAPON DATA' eol blank-line>
+  loadout*
+loadout = <'LOADOUT '> loadout-number <': '> loadout-name eol
+  starting-load
+  fired
+  missed
+  hit
+  weapon-events
+  blank-line*
+loadout-number = integer
+loadout-name = line-remainder
+starting-load = <'Starting Load '> integer eol
+fired = <'Fired '> integer eol
+missed = <'Missed '> integer eol
+hit = <'Hit '> integer eol
+weapon-events = weapon-event*
+weapon-event = <'Event '> line-remainder eol
+
+
+timestamp = timestamp-date <' '> timestamp-time
+timestamp-date = month <'/'> day <'/'> year
+timestamp-time = time
+event-time = time
+<time> = hour <':'> minute <':'> second
+month = one-or-two-digit-number
+day = one-or-two-digit-number
+year = four-digit-number
+hour = two-digit-number
+minute = two-digit-number
+second = two-digit-number
+<integer> = #'\d+'
+<one-or-two-digit-number> = #'\d{1,2}'
+<two-digit-number> = #'\d{2}'
+<four-digit-number> = #'\d{4}'
+optional-whitespace = whitespace-char*
+<whitespace-char> = ' ' | '\t'
+<eol> = <' '* newline>
+<newline> = <'\015'? crnl>
+crnl = '\n' | '\r\n' | '\n\r' | '\n' | '\01'
+<blank-line> = '' newline
+<non-blank-line> = #".+" <newline>
+<line-remainder> = #".*"
+non-separator-line = #"^[^-].*$" newline
+<words> = (#'\p{Graph}+' whitespace-char*)+
