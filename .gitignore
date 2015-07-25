@@ -3,3 +3,5 @@
 /debrief-short2.txt
 /debrief.txt
 /.nrepl-port
+scratch.clj
+target/

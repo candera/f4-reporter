@@ -1,9 +1,10 @@
 (set-env!
- :source-paths #{"src/clj" "src/cljs" "src/cljc"}
+ :source-paths #{"src" "test"}
  :resource-paths #{"resources"}
  :target-path "target"
  :dependencies '[ ;; boot
                  [adzerk/boot-cljs "0.0-3308-0" :scope "test"]
+                 [adzerk/boot-test "1.0.4" :scope "test"]
                  ;;[adzerk/boot-reload "0.2.4" :scope "test"]
 
                  ;; Clojure
@@ -21,8 +22,10 @@
  '[adzerk.boot-cljs :refer [cljs]]
  ;;'[adzerk.boot-reload :refer [reload]]
  '[clojure.tools.namespace.repl :as repl :refer [refresh]]
- '[org.craigandera.debrief-parser.parser :as parser :refer :all]
+ '[org.craigandera.debrief-parser.parser :as dp]
+ '[org.craigandera.parst :as parst]
  '[clojure.string :as str]
+ '[adzerk.boot-test :refer :all]
  )
 
 (apply repl/set-refresh-dirs (get-env :directories))

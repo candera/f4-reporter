@@ -1,6 +1,4 @@
-(ns org.craigandera.debrief-parser
-  (:require-macros [org.craigandera.debrief-parser.macros :as macros])
-  (:require [instaparse.core :as insta]))
+(ns org.craigandera.debrief-parser.main)
 
 ;; function readSingleFile(e) {
 ;;   var file = e.target.files[0];
@@ -28,10 +26,7 @@
   (set! (.-innerHTML (.getElementById js/document "output"))
         contents))
 
-(def parser
-  (-> "grammar.txt" macros/slurp-resource insta/parser))
-
-(defn parse-file
+#_(defn parse-file
   [e]
   (let [file (-> e .-target .-files (.item 0))]
     (if-not file
