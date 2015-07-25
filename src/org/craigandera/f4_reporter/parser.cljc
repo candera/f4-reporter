@@ -8,21 +8,24 @@
 
 (defn consume-game-string
   [[string & more-strings]]
-  [more-strings (p/tokenize string ["Game is " :game-type " type " :network-type])])
+  (p/->result
+   more-strings
+   (p/tokenize string ["Game is " :game-type " type " :network-type])))
 
 (defn consume-mission-string
   [[string & more-strings :as strings]]
   (if-let [data (p/tokenize string ["Mission name: " :mission-name])]
-    [more-strings data]
-    [strings {}]))
+    (p/->result more-strings data)
+    (p/->result strings {})))
 
 (defn blank-consumer
   "Returns a consumer that consumes zero or more blank strings and
   parses to val."
   [val]
   (fn [strings]
-    [(drop-while str/blank? strings)
-     val]))
+    (p/->result
+     (drop-while str/blank? strings)
+     val)))
 
 (defn consume-game-header
   [strings]
@@ -104,7 +107,7 @@
                  merge
                  [(p/tokenizer ["WEAPON DATA"])
                   (blank-consumer {})
-                  (p/->map :loadouts (p/consume+ consume-loadout))]))
+                  (p/->map :loadouts (p/consume* consume-loadout))]))
 
 (defn consume-pilot-block
   [strings]
@@ -153,14 +156,14 @@
 
 (defn parse
   [debrief]
-  (let [lines (->> debrief
-                str/split-lines
-                (map str/trim))
+  (let [lines    (->> debrief
+                   str/split-lines
+                   (map str/trim))
         consumer (p/consume+ consume-section)
-        [unconsumed parsed] (consumer lines)]
-    (when-not (empty? unconsumed)
+        result   (consumer lines)]
+    (when-not (empty? (p/unconsumed result))
       (throw (ex-info "Unparsed content remains in the file"
                       {:reason :leftovers
-                       :consumed (count parsed)
-                       :remainder (take 20 unconsumed)})))
-    parsed))
+                       :consumed (count (p/parsed result))
+                       :remainder (take 20 (p/unconsumed result))})))
+    (p/parsed result)))
