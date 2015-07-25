@@ -1,4 +1,4 @@
-(ns org.craigandera.debrief-parser.main)
+(ns org.craigandera.f4-reporter.main)
 
 ;; function readSingleFile(e) {
 ;;   var file = e.target.files[0];

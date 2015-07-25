@@ -1,4 +1,4 @@
-(ns org.craigandera.debrief-parser.parser
+(ns org.craigandera.f4-reporter.parser
   "A parser for Falcon debrief files"
   (:require [clojure.string :as str]
             [org.craigandera.parst :as p]))

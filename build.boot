@@ -22,7 +22,7 @@
  '[adzerk.boot-cljs :refer [cljs]]
  ;;'[adzerk.boot-reload :refer [reload]]
  '[clojure.tools.namespace.repl :as repl :refer [refresh]]
- '[org.craigandera.debrief-parser.parser :as dp]
+ '[org.craigandera.f4-reporter.parser :as dp]
  '[org.craigandera.parst :as parst]
  '[clojure.string :as str]
  '[adzerk.boot-test :refer :all]
@@ -32,9 +32,9 @@
 
 
 (task-options!
-  pom {:project 'org.craigandera/debrief-parser
+  pom {:project 'org.craigandera/f4-reporter
        :version "0.1.0"}
   jar {:manifest {"author" "Craig Andera"}}
-  cljs {:main 'org.craigandera.debrief-parser
+  cljs {:main 'org.craigandera.f4-reporter.main
         :asset-path "target/out"})
 
