@@ -1,4 +1,5 @@
-(ns org.craigandera.f4-reporter.main)
+(ns org.craigandera.f4-reporter.main
+  (:require [org.craigandera.f4-reporter.parser :as p]))
 
 ;; function readSingleFile(e) {
 ;;   var file = e.target.files[0];
@@ -26,7 +27,7 @@
   (set! (.-innerHTML (.getElementById js/document "output"))
         contents))
 
-#_(defn parse-file
+(defn parse-file
   [e]
   (let [file (-> e .-target .-files (.item 0))]
     (if-not file
@@ -39,7 +40,7 @@
                   (display-contents (->> e
                                       .-target
                                       .-result
-                                      (insta/parse parser)
+                                      p/parse
                                       pr-str))))
           (.readAsText reader file))))))
 

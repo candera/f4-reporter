@@ -73,7 +73,8 @@
                 :flight-events (p/consume+ consume-flight-event)
                 :blanks (blank-consumer :ignore))))
 
-(def number #(Long. ^String %))
+(def number #?(:clj #(Long. ^String %)
+               :cljs #(js/Number. ^String %)))
 
 (def consume-weapon-event
   (p/alternative-consumer
@@ -160,7 +161,11 @@
                    str/split-lines
                    (map str/trim))
         consumer (p/consume+ consume-section)
-        result   (consumer lines)]
+        ;; start    (.now js/Date)
+        result   (consumer lines)
+        ;;stop     (.now js/Date)
+        ;;_        (.debug js/console (/ (- stop start) 1000.0))
+        ]
     (when-not (empty? (p/unconsumed result))
       (throw (ex-info "Unparsed content remains in the file"
                       {:reason :leftovers

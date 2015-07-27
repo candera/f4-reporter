@@ -36,5 +36,7 @@
        :version "0.1.0"}
   jar {:manifest {"author" "Craig Andera"}}
   cljs {:main 'org.craigandera.f4-reporter.main
-        :asset-path "target/out"})
+        :asset-path "target/out"
+        :optimizations :simple
+        :source-map true})
 
